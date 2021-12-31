@@ -48,7 +48,7 @@ namespace WebApiCqrs.Features.Books
                 };
 
                 var endPoint = await _bus.GetSendEndpoint(uri);
-                await endPoint.Send(request, cancellationToken);
+                await endPoint.Send(entity, cancellationToken);
                 return 200;
             }
         }

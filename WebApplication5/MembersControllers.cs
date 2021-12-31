@@ -18,6 +18,7 @@ namespace MemberJWTDemo.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+
     public class MembersController : ControllerBase
     {
 

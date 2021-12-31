@@ -14,7 +14,7 @@ using System.Reflection;
 using System.Text;
 using WebApiCqrs.Data;
 using Microsoft.EntityFrameworkCore;
-
+using WebApplication5;
 
 namespace MemberJWTDemo
 {
@@ -32,13 +32,19 @@ namespace MemberJWTDemo
         {
             services.AddMassTransit(x =>
             {
+                x.AddConsumer<MemberConsumer>();
 
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
-                    // configure health checks for this bus instance
-                    cfg.UseHealthCheck(provider);
-
                     cfg.Host("rabbitmq://localhost");
+
+                    cfg.ReceiveEndpoint("member-queue", ep =>
+                    {
+                        ep.PrefetchCount = 16;
+                        ep.UseMessageRetry(r => r.Interval(2, 100));
+
+                        ep.ConfigureConsumer<MemberConsumer>(provider);
+                    });
 
                 }));
             });
